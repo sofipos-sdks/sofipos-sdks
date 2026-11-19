@@ -7,6 +7,8 @@ Thư viện chính thức để đối tác kết nối với **SofiPOS FnB Part
 - Nền tảng: .NET 8 trở lên
 - Phụ thuộc duy nhất: `Microsoft.Extensions.Http` (cho `IHttpClientFactory` và DI)
 
+[Bắt đầu nhanh](https://github.com/sofipos-sdks/sofipos-sdks/blob/main/docs/getting-started.md) · [Chuyển đổi API](https://github.com/sofipos-sdks/sofipos-sdks/blob/main/docs/migration-guide.md) · [Changelog](https://github.com/sofipos-sdks/sofipos-sdks/blob/main/CHANGELOG.md) · [Hỗ trợ](https://github.com/sofipos-sdks/sofipos-sdks/blob/main/SUPPORT.md)
+
 ## Cài đặt
 
 Để dùng trực tiếp source trong repository, xem [Bắt đầu nhanh](https://github.com/sofipos-sdks/sofipos-sdks/blob/main/docs/getting-started.md). Lệnh NuGet bên dưới áp dụng khi package đã được phát hành; version trong source hiện là `1.0.0`.
@@ -18,9 +20,10 @@ dotnet add package SofiPOS.FnB.Sdk
 Khi chưa phát hành lên NuGet.org, cài từ file `.nupkg` được SofiPOS cung cấp:
 
 ```bash
-dotnet nuget add source D:\packages --name sofipos-local
-dotnet add package SofiPOS.FnB.Sdk --version 1.0.0 --source sofipos-local
+dotnet add package SofiPOS.FnB.Sdk --version 1.0.0 --source ./packages
 ```
+
+Thay `./packages` bằng thư mục/feed chứa gói đã nhận. Nếu dùng `ProjectReference`, không cần tạo hoặc cài package local.
 
 ## Cấu hình
 
@@ -290,7 +293,7 @@ app.MapPost("/sofipos/webhook", async (HttpRequest request, SofiPosFnBClient sof
 
 ## Ví dụ
 
-Thư mục `examples/SofiPOS.FnB.Example`:
+Chạy các lệnh sau từ thư mục `sdks/fnb/dotnet`. Ví dụ console nằm tại `examples/SofiPOS.FnB.Example`; giao diện [SDK Lab](https://github.com/sofipos-sdks/sofipos-sdks/tree/main/examples/fnb) đặt riêng trong workspace.
 
 ```bash
 # Kiểm tra chữ ký webhook, không cần mạng
@@ -309,10 +312,10 @@ Trên Windows PowerShell dùng `$env:SOFIPOS_BASE_URL = "..."` thay cho `export`
 
 ## Build từ mã nguồn
 
+Các lệnh sau dành cho maintainer, chạy từ thư mục `sdks/fnb/dotnet` khi cần build hoặc đóng gói:
+
 ```bash
-dotnet restore
-dotnet build -c Release
-dotnet test -c Release
+dotnet build SofiPOS.FnB.Sdk -c Release
 dotnet pack SofiPOS.FnB.Sdk -c Release -o artifacts
 ```
 
@@ -321,6 +324,8 @@ Gói được tạo tại `artifacts/SofiPOS.FnB.Sdk.1.0.0.nupkg` (kèm `.snupkg
 ## Phát hành gói
 
 SofiPOS tự phát hành; SDK không chứa API key NuGet nào.
+
+Quy trình version, tag và phân phối package nằm trong [hướng dẫn phát hành](https://github.com/sofipos-sdks/sofipos-sdks/blob/main/docs/maintainers/releases.md). Phát hành package sử dụng commit đã được review và thông tin xác thực của feed.
 
 ```bash
 dotnet nuget push artifacts/SofiPOS.FnB.Sdk.1.0.0.nupkg --source https://api.nuget.org/v3/index.json --api-key <NUGET_API_KEY>

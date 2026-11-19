@@ -4,6 +4,13 @@ Các thay đổi ảnh hưởng đến đối tác tích hợp được ghi tạ
 
 ## Unreleased
 
+### Trải nghiệm tích hợp và phát hành SDK
+
+- README có bảng chọn SDK, lối vào quickstart/demo và liên kết tài liệu theo nhu cầu tích hợp.
+- Thêm mục lục tài liệu, hướng dẫn chuyển đổi API chi nhánh/nhóm sản phẩm và quy trình phát hành NuGet theo version/tag.
+- Kiểm tra source bằng Node.js không cần dependency: UTF-8 không BOM, JSON, liên kết tài liệu, `ProjectReference` và project trong solution. CI chạy kiểm tra này cùng kiểm tra TypeScript.
+- Bổ sung release notes trong metadata package và `ContinuousIntegrationBuild` cho môi trường GitHub Actions; chuẩn hóa quy tắc xuống dòng cho các file source và cấu hình.
+
 ### Ứng dụng thử SDK
 
 - Nhập thông tin kết nối, xác minh bằng SDK và gọi API trực tiếp bằng form; các tham chiếu chọn theo tên từ API.

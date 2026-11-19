@@ -32,6 +32,14 @@ dotnet add path/to/YourApp.csproj reference path/to/sofipos-sdks/sdks/fnb/dotnet
 
 Hai đường dẫn `path/to/...` cần thay bằng đường dẫn thực tế trên máy của bạn. Đây là cách dùng được ngay, không cần có package trên NuGet.org.
 
+Nếu chưa có ứng dụng, từ thư mục gốc repository tạo một console app ở bên cạnh bản clone và thêm reference:
+
+```powershell
+$sdkProject = Join-Path (Get-Location).Path 'sdks/fnb/dotnet/SofiPOS.FnB.Sdk/SofiPOS.FnB.Sdk.csproj'
+dotnet new console --name SofiPOS.PartnerExample --framework net8.0 --output ../sofipos-partner-example
+dotnet add ../sofipos-partner-example/SofiPOS.PartnerExample.csproj reference $sdkProject
+```
+
 Sau khi SofiPOS công bố package trên NuGet.org, có thể cài bằng:
 
 ```powershell
@@ -73,6 +81,14 @@ foreach (var branch in branches)
 ```
 
 Tạo client một lần rồi tái sử dụng. Nếu tích hợp ASP.NET Core hoặc nhiều cửa hàng, xem phần DI và `ISofiPosFnBClientFactory` trong [README SDK](../sdks/fnb/dotnet/README.md).
+
+Đặt đoạn code trên trong `Program.cs` của ứng dụng. Với console app vừa tạo, từ thư mục repository chạy:
+
+```powershell
+dotnet run --project ../sofipos-partner-example/SofiPOS.PartnerExample.csproj
+```
+
+Các nhóm `Fnb`, `FnbOrders`, `FnbPayments` yêu cầu chi nhánh cho từng request. Lấy danh sách chi nhánh bằng lời gọi trên, chọn chi nhánh FnB phù hợp rồi truyền `branchId`; xem [hướng dẫn tích hợp](integration-guide.md) và [hướng dẫn chuyển đổi](migration-guide.md).
 
 ## Chạy ví dụ hoặc giao diện demo
 

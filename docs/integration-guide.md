@@ -62,4 +62,4 @@ SDK Lab có sẵn endpoint `/webhooks/sofipos`, inbox và mô phỏng chữ ký 
 
 SDK Lab là công cụ thử tích hợp và quan sát dữ liệu. Backend hiện không có đăng nhập hoặc phân quyền người dùng cho các endpoint quản lý; chạy demo trong môi trường phát triển hoặc mạng được kiểm soát. Khi nhận callback từ POS qua Internet, chỉ chuyển tiếp đường dẫn webhook theo hướng dẫn demo.
 
-Thay đổi gửi từ demo qua Partner API không phát webhook từ POS; demo cập nhật bản sao trực tiếp từ response SDK. Để thử callback thật, dùng thao tác trên phần mềm POS hoặc chức năng gửi thử của POS.
+Thay đổi gửi từ demo qua Partner API không phát webhook từ POS; demo hiển thị kết quả trực tiếp từ response SDK. Để thử callback thật, dùng thao tác trên phần mềm POS hoặc chức năng gửi thử của POS.
