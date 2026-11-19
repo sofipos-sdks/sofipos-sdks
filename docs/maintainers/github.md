@@ -6,7 +6,7 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Organization dự kiến | `sofipos-sdks` |
+| Organization | `sofipos-sdks` |
 | Tài khoản owner | `Toanf2103` |
 | Repository | `sofipos-sdks` |
 | Nhánh mặc định | `main` |
@@ -49,7 +49,7 @@ Tham khảo chính thức: [rulesets](https://docs.github.com/en/repositories/co
 
 ## Trang tổ chức tương tự Grab
 
-Trang [Grab](https://github.com/grab) là profile GitHub Organization với danh sách repository được ghim. Organization dự kiến của SofiPOS là `sofipos-sdks`, do tài khoản `Toanf2103` quản lý. File cấu hình local không tự tạo organization trên GitHub.
+Trang [Grab](https://github.com/grab) là profile GitHub Organization với danh sách repository được ghim. Organization của SofiPOS là `sofipos-sdks`, do tài khoản `Toanf2103` quản lý. File cấu hình local không tự tạo organization trên GitHub.
 
 Khi organization đã được tạo:
 

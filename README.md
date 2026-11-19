@@ -42,7 +42,7 @@ SDK hiện đặt version `1.0.0` trong source. Khả năng cài từ NuGet.org 
 SDK theo từng mô hình bán hàng, tách theo ngôn ngữ; ứng dụng demo đặt riêng trong `examples`.
 
 ```text
-sdk-pos/
+sofipos-sdks/
 ├── sdks/
 │   └── fnb/
 │       └── dotnet/
