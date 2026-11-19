@@ -14,7 +14,7 @@ Tạo GitHub Issue bằng biểu mẫu tương ứng. Với lỗi, cung cấp ve
 4. Cập nhật tài liệu hoặc `CHANGELOG.md` khi thay đổi ảnh hưởng người dùng SDK.
 5. Mở pull request, mô tả vấn đề, hành vi sau thay đổi và những kiểm tra thực tế đã thực hiện.
 
-SDK mới đặt tại `sdks/{model}/{language}`; ứng dụng demo đặt tại `examples/`. Không thêm thư mục SDK rỗng để biểu thị chức năng chưa triển khai.
+SDK mới đặt tại `sdks/{model}/{language}`; ứng dụng demo đặt tại `examples/{model}/`, với một `frontend/` dùng chung và `backends/{language}/` cho từng SDK. Backend FnB mới tuân theo [hợp đồng HTTP](examples/fnb/CONTRACT.md); không sao chép frontend theo ngôn ngữ SDK. Không thêm thư mục SDK rỗng để biểu thị chức năng chưa triển khai.
 
 Không đưa Partner Key, webhook secret, connection string có mật khẩu, keyring hoặc dữ liệu khách hàng vào commit. Chỉ dùng cấu hình mẫu đã bỏ thông tin xác thực.
 
@@ -23,7 +23,7 @@ Không đưa Partner Key, webhook secret, connection string có mật khẩu, ke
 Với frontend, có thể kiểm tra TypeScript mà không tạo bundle:
 
 ```powershell
-Set-Location examples/fnb-dotnet-react/frontend
+Set-Location examples/fnb/frontend
 npm ci --ignore-scripts
 npm run check
 ```

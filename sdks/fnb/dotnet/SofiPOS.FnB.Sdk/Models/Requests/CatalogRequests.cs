@@ -9,6 +9,10 @@ public sealed class ProductCreateRequest
     [JsonPropertyName("productCode")]
     public string ProductCode { get; set; } = string.Empty;
 
+    /// <summary>Nhóm sản phẩm (bắt buộc), lấy từ <c>Lookups.GetProductCategoriesAsync</c>.</summary>
+    [JsonPropertyName("categoryId")]
+    public Guid CategoryId { get; set; }
+
     /// <summary>Tên sản phẩm (bắt buộc, tối đa 500 ký tự).</summary>
     [JsonPropertyName("name")]
     public string Name { get; set; } = string.Empty;

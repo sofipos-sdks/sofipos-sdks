@@ -13,7 +13,7 @@ Kết nối ứng dụng của bạn với danh mục, thực đơn, bàn, đơn
 | [SofiPOS SDKs](https://github.com/sofipos-sdks/sofipos-sdks) | SDK, ví dụ và tài liệu tích hợp |
 | [Bắt đầu nhanh](https://github.com/sofipos-sdks/sofipos-sdks/blob/main/docs/getting-started.md) | Cài đặt và thực hiện lời gọi đầu tiên |
 | [SDK FnB .NET](https://github.com/sofipos-sdks/sofipos-sdks/tree/main/sdks/fnb/dotnet) | Model có kiểu dữ liệu, phân trang, xử lý lỗi và webhook |
-| [SDK Lab](https://github.com/sofipos-sdks/sofipos-sdks/tree/main/examples/fnb-dotnet-react) | Giao diện React + .NET để thực hành tích hợp |
+| [SDK Lab](https://github.com/sofipos-sdks/sofipos-sdks/tree/main/examples/fnb) | Giao diện React + .NET để thực hành tích hợp |
 
 ## Kết nối với SofiPOS
 

@@ -22,6 +22,12 @@ public abstract class ServiceBase
         return Uri.EscapeDataString(value.Trim());
     }
 
+    /// <summary>Query <c>branchId</c> bắt buộc của API FnB; <see cref="Guid.Empty"/> báo lỗi trước khi gửi.</summary>
+    private protected static QueryString Branch(Guid branchId) => new QueryString().Add("branchId", RequiredBranch(branchId));
+
+    private protected static Guid RequiredBranch(Guid branchId)
+        => branchId == Guid.Empty ? throw new ArgumentException("Vui lòng truyền chi nhánh (branchId).", nameof(branchId)) : branchId;
+
     private protected static QueryString Page(PageQuery? query)
     {
         var q = new QueryString();

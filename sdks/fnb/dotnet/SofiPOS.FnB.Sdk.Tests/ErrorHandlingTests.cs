@@ -11,7 +11,7 @@ public class ErrorHandlingTests
         var client = TestClient.Create(new MockHttpHandler().Respond(HttpStatusCode.BadRequest, body,
             r => r.Headers.Add("trace-id", "00-abc-01")));
 
-        var ex = await Assert.ThrowsAsync<SofiPosApiException>(() => client.FnbOrders.GetAsync(Guid.NewGuid()));
+        var ex = await Assert.ThrowsAsync<SofiPosApiException>(() => client.FnbOrders.GetAsync(Guid.NewGuid(), Guid.NewGuid()));
 
         Assert.Equal(HttpStatusCode.BadRequest, ex.StatusCode);
         Assert.Equal("Dữ liệu không hợp lệ", ex.Message);
@@ -30,7 +30,7 @@ public class ErrorHandlingTests
         const string body = "{\"title\":\"One or more validation errors occurred.\",\"status\":400,\"errors\":{\"Note\":[\"Quá dài\"]}}";
         var client = TestClient.Create(new MockHttpHandler().Respond(HttpStatusCode.BadRequest, body));
 
-        var ex = await Assert.ThrowsAsync<SofiPosApiException>(() => client.FnbOrders.UpdateNoteAsync(Guid.NewGuid(), "x"));
+        var ex = await Assert.ThrowsAsync<SofiPosApiException>(() => client.FnbOrders.UpdateNoteAsync(Guid.NewGuid(), Guid.NewGuid(), "x"));
 
         Assert.Equal("One or more validation errors occurred.", ex.Message);
         Assert.Equal(new SofiPosValidationError("Note", "Quá dài"), Assert.Single(ex.Errors));
@@ -42,7 +42,7 @@ public class ErrorHandlingTests
     {
         var client = TestClient.Create(new MockHttpHandler().Respond(HttpStatusCode.BadRequest, "\"Bàn đang có đơn khác\""));
 
-        var ex = await Assert.ThrowsAsync<SofiPosApiException>(() => client.FnbOrders.ChangeTableAsync(Guid.NewGuid(), Guid.NewGuid()));
+        var ex = await Assert.ThrowsAsync<SofiPosApiException>(() => client.FnbOrders.ChangeTableAsync(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid()));
 
         Assert.Equal("Bàn đang có đơn khác", ex.Message);
     }

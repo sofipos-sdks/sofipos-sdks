@@ -10,7 +10,7 @@ Mỗi client gắn với một cửa hàng. Khi phục vụ nhiều cửa hàng,
 
 ## Luồng đơn hàng FnB
 
-1. Đọc chi nhánh bằng `Lookups.GetBranchesAsync` và chọn chi nhánh FnB phù hợp.
+1. Đọc chi nhánh bằng `Lookups.GetBranchesAsync` và chọn chi nhánh FnB phù hợp. Chi nhánh được truyền rõ ở **mọi** hàm FnB (tham số `branchId` đầu tiên, SDK gửi qua query `branchId`); đối tác không còn chi nhánh mặc định. Đơn phải thuộc đúng chi nhánh truyền vào, kể cả đơn nguồn/đích khi gộp hoặc chuyển món.
 2. Đọc bàn, menu và phương thức thanh toán qua nhóm `Fnb`.
 3. Tạo đơn bằng `FnbOrders.CreateAsync`, giữ `RequestId` cùng đơn trong hệ thống đối tác.
 4. Thêm/sửa/hủy món, combo hoặc chuyển/gộp/tách đơn theo nghiệp vụ.
@@ -18,7 +18,13 @@ Mỗi client gắn với một cửa hàng. Khi phục vụ nhiều cửa hàng,
 6. Nếu dùng chuyển khoản, tạo QR và kiểm tra giao dịch qua `FnbPayments`.
 7. Gọi `FnbPayments.PayAsync` để ghi nhận thanh toán.
 
-Tạo QR hoặc nhận kết quả kiểm tra giao dịch không tự chốt đơn. Các model và ví dụ đầy đủ nằm trong [README SDK](../sdks/fnb/dotnet/README.md); [bảng độ phủ](../examples/fnb-dotnet-react/COVERAGE.md) đối chiếu từng phương thức với endpoint.
+Webhook `order.created`/`order.updated` có `data.branchId`; đọc lại đơn bằng `FnbOrders.GetAsync(data.BranchId, data.OrderId)`.
+
+Tạo QR hoặc nhận kết quả kiểm tra giao dịch không tự chốt đơn. Các model và ví dụ đầy đủ nằm trong [README SDK](../sdks/fnb/dotnet/README.md); [bảng độ phủ](../examples/fnb/COVERAGE.md) đối chiếu từng phương thức với endpoint.
+
+## Tạo sản phẩm
+
+`Products.CreateAsync` bắt buộc `CategoryId`. Lấy danh sách nhóm bằng `Lookups.GetProductCategoriesAsync()`; nhóm phải thuộc cửa hàng và là nhóm sản phẩm, sai hoặc thiếu trả `422`. Hệ thống không tự chọn nhóm.
 
 ## Retry và chống trùng
 
@@ -50,7 +56,7 @@ SDK cung cấp `SofiPosWebhookVerifier.VerifyAndParse`; ứng dụng đối tác
 
 Header webhook gồm `X-Webhook-Id`, `X-Webhook-Event`, `X-Webhook-Timestamp`, `X-Webhook-Signature`. Chữ ký dùng HMAC-SHA256 trên `timestamp + "." + rawBody`.
 
-SDK Lab có sẵn endpoint `/webhooks/sofipos`, inbox, mô phỏng chữ ký và worker. Xem [hướng dẫn webhook của demo](../examples/fnb-dotnet-react/README.md#nhận-webhook-thật).
+SDK Lab có sẵn endpoint `/webhooks/sofipos`, inbox và mô phỏng chữ ký trong RAM. Demo chỉ xác minh/ghi nhận sự kiện, không chạy worker hoặc gọi lại POS sau webhook. Xem [hướng dẫn webhook của demo](../examples/fnb/README.md#trace-và-webhook).
 
 ## Phạm vi của SDK Lab
 

@@ -92,7 +92,7 @@ public class RequestTests
 
         await client.SaleChannels.UpdateAsync("Giao Hang/1", new SaleChannelUpdateRequest { IsActive = true, Priority = 2 });
         await client.Products.DeleteAsync(Guid.Parse("6f1c2a1e-1d5b-4d0e-9a0a-2b1f6c1e9a11"));
-        await client.FnbPayments.CheckQrTransactionAsync(Guid.Parse("0b6f2a9e-1c3d-4e5f-8a7b-9c0d1e2f3a4b"), "PaymentVietQr");
+        await client.FnbPayments.CheckQrTransactionAsync(Guid.NewGuid(), Guid.Parse("0b6f2a9e-1c3d-4e5f-8a7b-9c0d1e2f3a4b"), "PaymentVietQr");
 
         Assert.Equal(HttpMethod.Put, handler.Requests[0].Method);
         Assert.Equal("/api/partner/v1/sale-channels/Giao%20Hang%2F1", handler.Requests[0].Uri.AbsolutePath);
@@ -113,7 +113,7 @@ public class RequestTests
         var requestId = Guid.Parse("6c2f1b0e-0d8f-4a43-9d34-1a2b3c4d5e6f");
         var productId = Guid.Parse("11111111-2222-3333-4444-555555555555");
 
-        await client.FnbOrders.CreateAsync(new FnbOrderCreateRequest
+        await client.FnbOrders.CreateAsync(Guid.Parse("5a4b3c2d-1e0f-4a9b-8c7d-6e5f4a3b2c1d"), new FnbOrderCreateRequest
         {
             RequestId = requestId,
             SaleChannelId = "TaiCho",
@@ -128,7 +128,7 @@ public class RequestTests
                     AddOns = { new FnbOrderAddOnRequest { ProductId = productId } }
                 }
             }
-        }, branchId: Guid.Parse("5a4b3c2d-1e0f-4a9b-8c7d-6e5f4a3b2c1d"));
+        });
 
         var request = handler.Requests[0];
         Assert.Equal(HttpMethod.Post, request.Method);
@@ -155,8 +155,8 @@ public class RequestTests
         var client = TestClient.Create(handler);
         var orderId = Guid.NewGuid();
 
-        await client.FnbOrders.SetCustomerAsync(orderId, null);
-        await client.FnbOrders.UpdateProductUnitAsync(orderId, Guid.NewGuid(), null);
+        await client.FnbOrders.SetCustomerAsync(Guid.NewGuid(), orderId, null);
+        await client.FnbOrders.UpdateProductUnitAsync(Guid.NewGuid(), orderId, Guid.NewGuid(), null);
 
         Assert.Equal("{\"customerId\":null}", handler.Requests[0].Body);
         Assert.Equal("{\"unitId\":null}", handler.Requests[1].Body);
@@ -168,7 +168,7 @@ public class RequestTests
         var handler = new MockHttpHandler().RespondJson(OrderJson);
         var client = TestClient.Create(handler);
 
-        await client.FnbPayments.PayAsync(Guid.NewGuid(), new FnbPaymentRequest
+        await client.FnbPayments.PayAsync(Guid.NewGuid(), Guid.NewGuid(), new FnbPaymentRequest
         {
             Discount = OrderDiscountRequest.None,
             Voucher = new OrderVoucherRequest("ABC123"),

@@ -8,7 +8,7 @@
 [![Partner API v1](https://img.shields.io/badge/Partner_API-v1-16856B)](docs/integration-guide.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-[Bắt đầu nhanh](docs/getting-started.md) · [SDK .NET](sdks/fnb/dotnet/README.md) · [Ứng dụng demo](examples/fnb-dotnet-react/README.md) · [Hướng dẫn tích hợp](docs/integration-guide.md) · [Hỗ trợ](SUPPORT.md)
+[Bắt đầu nhanh](docs/getting-started.md) · [SDK .NET](sdks/fnb/dotnet/README.md) · [Ứng dụng demo](examples/fnb/README.md) · [Hướng dẫn tích hợp](docs/integration-guide.md) · [Hỗ trợ](SUPPORT.md)
 
 Kết nối ứng dụng của bạn với danh mục, thực đơn, bàn, đơn hàng và thanh toán FnB qua Partner API. SDK cung cấp model có kiểu dữ liệu, phân trang, xử lý lỗi, retry GET và kiểm tra chữ ký webhook.
 
@@ -39,7 +39,7 @@ SDK hiện đặt version `1.0.0` trong source. Khả năng cài từ NuGet.org 
 
 ## Cấu trúc workspace
 
-SDK theo từng mô hình bán hàng, tách theo ngôn ngữ; ứng dụng demo đặt riêng trong `examples`.
+SDK theo từng mô hình bán hàng, tách theo ngôn ngữ. Mỗi demo trong `examples/{model}` có một frontend dùng chung và các backend theo ngôn ngữ SDK.
 
 ```text
 sofipos-sdks/
@@ -52,9 +52,11 @@ sofipos-sdks/
 │           ├── examples/SofiPOS.FnB.Example/
 │           └── README.md
 └── examples/
-    └── fnb-dotnet-react/
-        ├── backend/
+    └── fnb/
         ├── frontend/
+        ├── backends/
+        │   └── dotnet/
+        ├── CONTRACT.md
         ├── COVERAGE.md
         └── README.md
 ```
@@ -69,9 +71,9 @@ Quy ước khi bổ sung SDK: `sdks/{model}/{language}`. Ví dụ `sdks/retail/d
 
 ## Ứng dụng demo
 
-[FnB SDK Lab — .NET 10 + React + MongoDB](examples/fnb-dotnet-react/README.md) cung cấp form cho đủ **91 thao tác Partner API**, nhận webhook, lưu bản sao dữ liệu và lịch sử SDK.
+[FnB SDK Lab](examples/fnb/README.md) có một frontend React dùng chung: nhập thông tin kết nối, gọi **92 thao tác Partner API** bằng form và chọn các bản ghi liên kết theo tên từ API. Có trace HTTP và webhook inbox trong RAM; không cần database hoặc đồng bộ dữ liệu trước.
 
-Backend dùng `ProjectReference` đến SDK trong workspace. Không cần xuất bản hoặc cài gói NuGet nội bộ để chạy demo.
+Backend hiện có tại `examples/fnb/backends/dotnet`, dùng `ProjectReference` đến SDK trong workspace. Backend mới, ví dụ Node.js, đặt tại `examples/fnb/backends/nodejs` khi được triển khai và tuân theo [hợp đồng HTTP](examples/fnb/CONTRACT.md). Đổi `BACKEND_URL` để frontend gọi backend khác; không cần nhân bản frontend.
 
 ## Tài liệu API
 
@@ -80,8 +82,8 @@ Backend dùng `ProjectReference` đến SDK trong workspace. Không cần xuất
 | [Bắt đầu nhanh](docs/getting-started.md) | Yêu cầu môi trường, cài đặt, lời gọi đầu tiên |
 | [Hướng dẫn tích hợp](docs/integration-guide.md) | Xác thực, nhiều cửa hàng, đơn hàng, lỗi và webhook |
 | [SDK .NET](sdks/fnb/dotnet/README.md) | Cấu hình, nhóm API và ví dụ chi tiết |
-| [SDK Lab](examples/fnb-dotnet-react/README.md) | Chạy demo .NET + React + MongoDB |
-| [Độ phủ chức năng](examples/fnb-dotnet-react/COVERAGE.md) | Đối chiếu 91 thao tác SDK với form demo |
+| [SDK Lab](examples/fnb/README.md) | Chạy demo .NET + React, phiên trong RAM |
+| [Độ phủ chức năng](examples/fnb/COVERAGE.md) | Đối chiếu 92 thao tác SDK với form demo |
 | [Changelog](CHANGELOG.md) | Thay đổi và thông tin tương thích |
 
 Đặc tả API triển khai và bộ Postman, nếu cần, được cung cấp qua đầu mối tích hợp SofiPOS của bạn. Các hướng dẫn trong repository này có thể đọc độc lập.

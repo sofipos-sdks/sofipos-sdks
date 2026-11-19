@@ -43,8 +43,8 @@ internal sealed class ApiClient
     public Task<T> PostAsync<T>(string path, object? body, CancellationToken cancellationToken, QueryString? query = null)
         => SendAsync<T>(HttpMethod.Post, path, query, body, hasBody: true, cancellationToken);
 
-    public Task<T> PutAsync<T>(string path, object? body, CancellationToken cancellationToken)
-        => SendAsync<T>(HttpMethod.Put, path, null, body, hasBody: true, cancellationToken);
+    public Task<T> PutAsync<T>(string path, object? body, CancellationToken cancellationToken, QueryString? query = null)
+        => SendAsync<T>(HttpMethod.Put, path, query, body, hasBody: true, cancellationToken);
 
     /// <summary>Gửi request không cần đọc dữ liệu trả về (ví dụ xóa); thành công khi mã HTTP 2xx.</summary>
     public async Task SendWithoutResultAsync(HttpMethod method, string path, object? body, CancellationToken cancellationToken)

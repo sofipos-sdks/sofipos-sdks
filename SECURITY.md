@@ -18,4 +18,4 @@ Repository đang chuẩn bị bản phát hành public đầu tiên. Chưa có c
 
 ## Demo
 
-SDK Lab phục vụ phát triển tích hợp. Các endpoint quản lý hiện chưa có đăng nhập/phân quyền người dùng. Hướng dẫn vận hành demo và giới hạn công khai callback nằm trong [README demo](examples/fnb-dotnet-react/README.md).
+SDK Lab phục vụ phát triển tích hợp. Các endpoint quản lý hiện chưa có đăng nhập/phân quyền người dùng. Hướng dẫn vận hành demo và giới hạn công khai callback nằm trong [README demo](examples/fnb/README.md).

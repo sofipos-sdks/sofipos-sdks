@@ -10,7 +10,7 @@ public class ResponseTests
         var handler = new MockHttpHandler().RespondJson(RequestTests.OrderJson);
         var client = TestClient.Create(handler);
 
-        var order = await client.FnbOrders.GetAsync(Guid.Parse("0b6f2a9e-1c3d-4e5f-8a7b-9c0d1e2f3a4b"));
+        var order = await client.FnbOrders.GetAsync(Guid.NewGuid(), Guid.Parse("0b6f2a9e-1c3d-4e5f-8a7b-9c0d1e2f3a4b"));
 
         Assert.Equal("DH000123", order.Code);
         Assert.Equal(new DateTime(2026, 11, 18, 15, 30, 0).AddTicks(1234567), order.CreateDate);
@@ -24,7 +24,7 @@ public class ResponseTests
         var json = RequestTests.OrderJson.Replace("2026-11-18T15:30:00.1234567+07:00", "2026-11-18T08:30:00Z");
         var client = TestClient.Create(new MockHttpHandler().RespondJson(json));
 
-        var order = await client.FnbOrders.GetAsync(Guid.NewGuid());
+        var order = await client.FnbOrders.GetAsync(Guid.NewGuid(), Guid.NewGuid());
 
         Assert.Equal(new DateTime(2026, 11, 18, 15, 30, 0), order.CreateDate);
     }
@@ -67,7 +67,7 @@ public class ResponseTests
     {
         var client = TestClient.Create(new MockHttpHandler().Respond(HttpStatusCode.Created, RequestTests.OrderJson));
 
-        var order = await client.FnbOrders.CreateAsync(new FnbOrderCreateRequest
+        var order = await client.FnbOrders.CreateAsync(Guid.NewGuid(), new FnbOrderCreateRequest
         {
             RequestId = Guid.NewGuid(),
             Items = { new FnbOrderItemRequest { ProductId = Guid.NewGuid(), Quantity = 1 } }
@@ -93,7 +93,7 @@ public class ResponseTests
     {
         var client = TestClient.Create(new MockHttpHandler().Respond(HttpStatusCode.NoContent));
 
-        var ex = await Assert.ThrowsAsync<SofiPosApiException>(() => client.FnbOrders.GetAsync(Guid.NewGuid()));
+        var ex = await Assert.ThrowsAsync<SofiPosApiException>(() => client.FnbOrders.GetAsync(Guid.NewGuid(), Guid.NewGuid()));
 
         Assert.Equal(HttpStatusCode.NoContent, ex.StatusCode);
     }
@@ -103,7 +103,7 @@ public class ResponseTests
     {
         var client = TestClient.Create(new MockHttpHandler().RespondJson("<html>ok</html>"));
 
-        var ex = await Assert.ThrowsAsync<SofiPosApiException>(() => client.FnbOrders.GetAsync(Guid.NewGuid()));
+        var ex = await Assert.ThrowsAsync<SofiPosApiException>(() => client.FnbOrders.GetAsync(Guid.NewGuid(), Guid.NewGuid()));
 
         Assert.Equal("<html>ok</html>", ex.ResponseBody);
         Assert.IsAssignableFrom<System.Text.Json.JsonException>(ex.InnerException);
@@ -114,7 +114,7 @@ public class ResponseTests
     {
         var client = TestClient.Create(new MockHttpHandler().RespondJson("true"));
 
-        var paid = await client.FnbPayments.CheckQrTransactionAsync(Guid.NewGuid(), "PaymentVietQr");
+        var paid = await client.FnbPayments.CheckQrTransactionAsync(Guid.NewGuid(), Guid.NewGuid(), "PaymentVietQr");
 
         Assert.True(paid);
     }

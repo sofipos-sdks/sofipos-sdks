@@ -49,12 +49,14 @@ try
     Console.WriteLine($"Cửa hàng có {branches.Count} chi nhánh:");
     foreach (var branch in branches) Console.WriteLine($"  - {branch.Name} ({branch.Id}){(branch.IsActive ? "" : " [ngừng]")}");
 
-    var branchId = branches.FirstOrDefault(b => b.IsActive)?.Id;
-    if (branchId == null)
+    // Chi nhánh truyền rõ ở mọi API FnB (query branchId); ví dụ chọn chi nhánh đang hoạt động đầu tiên.
+    var activeBranch = branches.FirstOrDefault(b => b.IsActive);
+    if (activeBranch == null)
     {
         Console.WriteLine("Không có chi nhánh đang hoạt động.");
         return 0;
     }
+    var branchId = activeBranch.Id;
 
     var areas = await client.Fnb.GetAreasAsync(branchId);
     Console.WriteLine($"\nKhu vực / bàn ({areas.Count} khu vực):");
@@ -75,16 +77,16 @@ try
             ?? throw new InvalidOperationException("Thực đơn không có món để tạo đơn thử.");
 
         // RequestId giữ nguyên khi gửi lại cùng một đơn để SofiPOS không tạo đơn trùng.
-        var created = await client.FnbOrders.CreateAsync(new FnbOrderCreateRequest
+        var created = await client.FnbOrders.CreateAsync(branchId, new FnbOrderCreateRequest
         {
             RequestId = Guid.NewGuid(),
             SaleChannelId = "TaiCho",
             Note = "Đơn thử từ SofiPOS FnB SDK",
             Items = { new FnbOrderItemRequest { ProductId = first.Id, Quantity = 1 } }
-        }, branchId);
+        });
         Console.WriteLine($"\nĐã tạo đơn {created.Code} ({created.Id}).");
 
-        var preview = await client.FnbPayments.PreviewAsync(created.Id);
+        var preview = await client.FnbPayments.PreviewAsync(branchId, created.Id);
         Console.WriteLine($"Tạm tính cần thanh toán: {preview.TotalAmount:N0}đ");
     }
 
@@ -119,7 +121,7 @@ static void RunWebhookDemo()
     {
         var data = webhookEvent.GetOrderData();
         Console.WriteLine($"  Đơn {data.Code} ({data.OrderId}) tại chi nhánh {data.BranchId}");
-        Console.WriteLine("  Bước tiếp theo: gọi client.FnbOrders.GetAsync(orderId) để lấy dữ liệu mới nhất.");
+        Console.WriteLine("  Bước tiếp theo: gọi client.FnbOrders.GetAsync(data.BranchId, orderId) để lấy dữ liệu mới nhất.");
     }
 
     var tampered = body.Replace("DH000123", "DH999999");

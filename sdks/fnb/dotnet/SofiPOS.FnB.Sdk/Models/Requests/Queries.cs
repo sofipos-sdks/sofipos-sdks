@@ -157,8 +157,8 @@ public sealed class OrderAdjustmentProgramListQuery : PageQuery
 /// <summary>Lọc danh sách đơn FnB của một chi nhánh.</summary>
 public sealed class FnbOrderListQuery : PageQuery
 {
-    /// <summary>Chi nhánh; bỏ trống dùng chi nhánh mặc định của đối tác.</summary>
-    public Guid? BranchId { get; set; }
+    /// <summary>Chi nhánh FnB (bắt buộc).</summary>
+    public Guid BranchId { get; set; }
 
     /// <summary>Từ thời điểm (giờ Việt Nam).</summary>
     public DateTime? FromDate { get; set; }
