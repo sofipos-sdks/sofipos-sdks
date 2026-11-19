@@ -6,12 +6,12 @@ updates:
       interval: weekly
     open-pull-requests-limit: 3
   - package-ecosystem: nuget
-    directory: /examples/fnb-dotnet-react/backend
+    directory: /examples/fnb/backends/dotnet
     schedule:
       interval: weekly
     open-pull-requests-limit: 3
   - package-ecosystem: npm
-    directory: /examples/fnb-dotnet-react/frontend
+    directory: /examples/fnb/frontend
     schedule:
       interval: weekly
     open-pull-requests-limit: 3

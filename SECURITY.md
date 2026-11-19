@@ -14,8 +14,8 @@ Nếu Partner Key, webhook secret hoặc mật khẩu dịch vụ đã bị chia
 
 ## Phiên bản
 
-Repository đang chuẩn bị bản phát hành public đầu tiên. Chưa có cam kết duy trì các nhánh phiên bản cũ; khi có bản phát hành, thông tin sửa lỗi và tương thích được ghi trong [CHANGELOG.md](CHANGELOG.md).
+Mã nguồn đã public; các thay đổi chưa gắn bản phát hành nằm trong mục `Unreleased` của [CHANGELOG.md](CHANGELOG.md). Chưa có cam kết duy trì các nhánh phiên bản cũ; khi có bản phát hành, thông tin sửa lỗi và tương thích được ghi trong changelog và release notes.
 
 ## Demo
 
-SDK Lab phục vụ phát triển tích hợp. Các endpoint quản lý hiện chưa có đăng nhập/phân quyền người dùng. Hướng dẫn vận hành demo và giới hạn công khai callback nằm trong [README demo](examples/fnb-dotnet-react/README.md).
+SDK Lab phục vụ phát triển tích hợp. Các endpoint quản lý hiện chưa có đăng nhập/phân quyền người dùng. Hướng dẫn vận hành demo và giới hạn công khai callback nằm trong [README demo](examples/fnb/README.md).

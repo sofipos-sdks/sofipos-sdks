@@ -7,6 +7,8 @@ Thư viện chính thức để đối tác kết nối với **SofiPOS FnB Part
 - Nền tảng: .NET 8 trở lên
 - Phụ thuộc duy nhất: `Microsoft.Extensions.Http` (cho `IHttpClientFactory` và DI)
 
+[Bắt đầu nhanh](https://github.com/sofipos-sdks/sofipos-sdks/blob/main/docs/getting-started.md) · [Chuyển đổi API](https://github.com/sofipos-sdks/sofipos-sdks/blob/main/docs/migration-guide.md) · [Changelog](https://github.com/sofipos-sdks/sofipos-sdks/blob/main/CHANGELOG.md) · [Hỗ trợ](https://github.com/sofipos-sdks/sofipos-sdks/blob/main/SUPPORT.md)
+
 ## Cài đặt
 
 Để dùng trực tiếp source trong repository, xem [Bắt đầu nhanh](https://github.com/sofipos-sdks/sofipos-sdks/blob/main/docs/getting-started.md). Lệnh NuGet bên dưới áp dụng khi package đã được phát hành; version trong source hiện là `1.0.0`.
@@ -18,9 +20,10 @@ dotnet add package SofiPOS.FnB.Sdk
 Khi chưa phát hành lên NuGet.org, cài từ file `.nupkg` được SofiPOS cung cấp:
 
 ```bash
-dotnet nuget add source D:\packages --name sofipos-local
-dotnet add package SofiPOS.FnB.Sdk --version 1.0.0 --source sofipos-local
+dotnet add package SofiPOS.FnB.Sdk --version 1.0.0 --source ./packages
 ```
+
+Thay `./packages` bằng thư mục/feed chứa gói đã nhận. Nếu dùng `ProjectReference`, không cần tạo hoặc cài package local.
 
 ## Cấu hình
 
@@ -47,6 +50,7 @@ var client = new SofiPosFnBClient(new SofiPosOptions
     ApiKey = Environment.GetEnvironmentVariable("SOFIPOS_API_KEY")
 });
 
+// Mọi API FnB bắt buộc truyền chi nhánh; SDK gửi qua query branchId. Không có chi nhánh mặc định của đối tác.
 var branches = await client.Lookups.GetBranchesAsync();
 var branchId = branches.First(b => b.IsActive).Id;
 
@@ -85,10 +89,10 @@ builder.Services.AddSofiPosFnB(o => o.BaseUrl = "https://api.example.com");
 
 public class OrderPusher(ISofiPosFnBClientFactory factory, IStoreKeyStore keys)
 {
-    public async Task PushAsync(string storeId, FnbOrderCreateRequest order, CancellationToken ct)
+    public async Task PushAsync(string storeId, Guid branchId, FnbOrderCreateRequest order, CancellationToken ct)
     {
         var client = factory.CreateClient(await keys.GetPartnerKeyAsync(storeId, ct));
-        await client.FnbOrders.CreateAsync(order, cancellationToken: ct);
+        await client.FnbOrders.CreateAsync(branchId, order, ct);
     }
 }
 ```
@@ -99,8 +103,8 @@ Client tạo từ factory dùng `HttpClient` do `IHttpClientFactory` quản lý,
 
 | Thuộc tính trên client | Endpoint | Chức năng |
 |---|---|---|
-| `Lookups` | `lookups/*` | Chi nhánh, hạng thành viên |
-| `Products` | `products` | Món/hàng hóa, đơn vị tính; tạo, sửa, xóa |
+| `Lookups` | `lookups/*` | Chi nhánh, nhóm sản phẩm, hạng thành viên |
+| `Products` | `products` | Món/hàng hóa, đơn vị tính; tạo (bắt buộc `CategoryId`), sửa, xóa |
 | `Combos` | `combos` | Combo |
 | `FlashSales` | `flashsales` | Flash sale |
 | `PricingPolicies` | `pricing-policies` | Chính sách giá, món thêm theo chính sách |
@@ -114,6 +118,26 @@ Client tạo từ factory dùng `HttpClient` do `IHttpClientFactory` quản lý,
 | `FnbPayments` | `fnb/orders/{id}/payment`, `fnb/orders/{id}/qr` | Xem trước tiền, tạo QR chuyển khoản, kiểm tra giao dịch, thanh toán |
 
 Mọi phương thức đều bất đồng bộ, có hậu tố `Async` và nhận `CancellationToken`.
+
+### Chi nhánh và nhóm sản phẩm theo từng request
+
+Đối tác không còn chi nhánh mặc định hay nhóm sản phẩm mặc định trong cấu hình kết nối.
+
+- Mọi hàm của `Fnb`, `FnbOrders`, `FnbPayments` nhận `branchId` làm tham số đầu (riêng `FnbOrders.ListAsync` dùng `FnbOrderListQuery.BranchId` bắt buộc). SDK gửi qua query `branchId`; `Guid.Empty` ném `ArgumentException` trước khi gửi. Đơn (kể cả đơn nguồn/đích khi gộp, chuyển món) phải thuộc chi nhánh này, khác chi nhánh API trả `422`.
+- `Products.CreateAsync` bắt buộc `ProductCreateRequest.CategoryId`, lấy từ `Lookups.GetProductCategoriesAsync()` (`Id`, `Name`, `ParentId`). `Product.CategoryId` cho biết nhóm hiện tại. API cập nhật chưa đổi được nhóm.
+
+```csharp
+var categories = await client.Lookups.GetProductCategoriesAsync();
+var product = await client.Products.CreateAsync(new ProductCreateRequest
+{
+    ProductCode = "CF001",
+    CategoryId = categories.First(c => c.Name == "Cà phê").Id,
+    Name = "Cà phê sữa",
+    Price = 30000
+});
+
+var detail = await client.FnbOrders.GetAsync(branchId, orderId);
+```
 
 ### Phân trang
 
@@ -133,7 +157,7 @@ await foreach (var product in client.Products.ListAllAsync(new ProductListQuery 
 ```csharp
 var requestId = Guid.NewGuid();   // Lưu lại cùng đơn phía đối tác
 
-var order = await client.FnbOrders.CreateAsync(new FnbOrderCreateRequest
+var order = await client.FnbOrders.CreateAsync(branchId, new FnbOrderCreateRequest
 {
     RequestId = requestId,
     SaleChannelId = "TaiCho",
@@ -149,14 +173,15 @@ var order = await client.FnbOrders.CreateAsync(new FnbOrderCreateRequest
             AddOns = { new FnbOrderAddOnRequest { ProductId = toppingId, Quantity = 1 } }
         }
     }
-}, branchId);
+});
 
-var preview = await client.FnbPayments.PreviewAsync(order.Id, new FnbPaymentRequest
+// Đơn, thanh toán, QR đều gửi kèm chi nhánh; đơn phải thuộc đúng chi nhánh này.
+var preview = await client.FnbPayments.PreviewAsync(branchId, order.Id, new FnbPaymentRequest
 {
     Voucher = new OrderVoucherRequest("GIAM20K")
 });
 
-var paid = await client.FnbPayments.PayAsync(order.Id, new FnbPaymentRequest
+var paid = await client.FnbPayments.PayAsync(branchId, order.Id, new FnbPaymentRequest
 {
     Voucher = new OrderVoucherRequest("GIAM20K"),
     PaymentMethod = PaymentMethod.Cash,
@@ -181,7 +206,7 @@ using SofiPOS.FnB.Exceptions;
 
 try
 {
-    await client.FnbOrders.CreateAsync(request, branchId);
+    await client.FnbOrders.CreateAsync(branchId, request);
 }
 catch (SofiPosApiException ex) when (ex.IsValidationError)
 {
@@ -249,7 +274,7 @@ app.MapPost("/sofipos/webhook", async (HttpRequest request, SofiPosFnBClient sof
     if (webhookEvent.IsOrderEvent)
     {
         var data = webhookEvent.GetOrderData();
-        var order = await sofipos.FnbOrders.GetAsync(data.OrderId);   // Webhook chỉ báo thay đổi; lấy dữ liệu mới nhất qua API
+        var order = await sofipos.FnbOrders.GetAsync(data.BranchId, data.OrderId);   // Webhook chỉ báo thay đổi; đọc lại theo chi nhánh trong payload
     }
     else if (webhookEvent.Event == SofiPosWebhookEvents.ProductChanged)
     {
@@ -268,7 +293,7 @@ app.MapPost("/sofipos/webhook", async (HttpRequest request, SofiPosFnBClient sof
 
 ## Ví dụ
 
-Thư mục `examples/SofiPOS.FnB.Example`:
+Chạy các lệnh sau từ thư mục `sdks/fnb/dotnet`. Ví dụ console nằm tại `examples/SofiPOS.FnB.Example`; giao diện [SDK Lab](https://github.com/sofipos-sdks/sofipos-sdks/tree/main/examples/fnb) đặt riêng trong workspace.
 
 ```bash
 # Kiểm tra chữ ký webhook, không cần mạng
@@ -287,10 +312,10 @@ Trên Windows PowerShell dùng `$env:SOFIPOS_BASE_URL = "..."` thay cho `export`
 
 ## Build từ mã nguồn
 
+Các lệnh sau dành cho maintainer, chạy từ thư mục `sdks/fnb/dotnet` khi cần build hoặc đóng gói:
+
 ```bash
-dotnet restore
-dotnet build -c Release
-dotnet test -c Release
+dotnet build SofiPOS.FnB.Sdk -c Release
 dotnet pack SofiPOS.FnB.Sdk -c Release -o artifacts
 ```
 
@@ -299,6 +324,8 @@ Gói được tạo tại `artifacts/SofiPOS.FnB.Sdk.1.0.0.nupkg` (kèm `.snupkg
 ## Phát hành gói
 
 SofiPOS tự phát hành; SDK không chứa API key NuGet nào.
+
+Quy trình version, tag và phân phối package nằm trong [hướng dẫn phát hành](https://github.com/sofipos-sdks/sofipos-sdks/blob/main/docs/maintainers/releases.md). Phát hành package sử dụng commit đã được review và thông tin xác thực của feed.
 
 ```bash
 dotnet nuget push artifacts/SofiPOS.FnB.Sdk.1.0.0.nupkg --source https://api.nuget.org/v3/index.json --api-key <NUGET_API_KEY>

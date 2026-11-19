@@ -17,33 +17,31 @@
 
 Giữ một repository cho SDK và ví dụ trong giai đoạn hiện tại. Mỗi SDK vẫn có version và tag riêng. Khi có nhiều SDK với chu kỳ phát hành độc lập, có thể tách repository và chuyển tài liệu/đường dẫn package tương ứng.
 
-## Lần public đầu tiên
+## Quy trình thay đổi
 
-1. Kiểm tra chỉ có cấu hình mẫu trong danh sách file Git. `.env`, `appsettings.Development.json`, `.local-data`, thư mục `net` cũ, `bin`, `obj`, `node_modules` và gói build phải được bỏ qua.
-2. Đổi thông tin xác thực đã từng bị lộ trước khi chia sẻ source. Xem [SECURITY.md](../../SECURITY.md).
-3. Tạo repository public trống `sofipos-sdks/sofipos-sdks`, không khởi tạo README, LICENSE hoặc `.gitignore` trên GitHub vì source đã có các file này.
-4. Sau khi review source, tạo commit đầu tiên và đẩy nhánh `main`.
+Repository đã public. Phát triển trên nhánh riêng, tạo pull request và review trước khi merge vào `main`.
 
 ```powershell
-git add .
-git diff --cached --stat
-git diff --cached --check
-git commit -m "chore: prepare SofiPOS SDKs for public integration"
-git remote add origin https://github.com/sofipos-sdks/sofipos-sdks.git
-git push -u origin main
+git switch main
+git pull --ff-only
+git switch -c docs/integration-guide
+node scripts/check-source.mjs
+git diff --check
 ```
 
-Nếu `origin` đã có, kiểm tra `git remote -v` và dùng remote đúng; không thêm lần hai. Các lệnh trên dành cho maintainer thực hiện khi sẵn sàng public, không phải tác vụ đã được chạy chỉ vì tài liệu tồn tại.
+Sau khi hoàn thành thay đổi, commit các file thuộc phạm vi công việc và đẩy nhánh để mở pull request. Xem [CONTRIBUTING.md](../../CONTRIBUTING.md) cho quy ước commit và thông tin review.
+
+Chỉ đưa cấu hình mẫu vào Git. `.env`, `appsettings.Development.json`, `.local-data`, thư mục `net` cũ, `bin`, `obj`, `node_modules` và package build được bỏ qua. Xử lý thông tin xác thực đã lộ theo [SECURITY.md](../../SECURITY.md).
 
 ## Cấu hình repository trên GitHub
 
 - Điền description và topics; ghim repository trên profile tài khoản.
 - Bật Issues và **Private vulnerability reporting**; tắt Wiki nếu không dùng để tránh phân tán tài liệu.
-- Với ruleset cho `main`, yêu cầu pull request và status check `Frontend TypeScript` sau khi workflow đã chạy thành công. Cấu hình người review và quyền bypass phù hợp với số maintainer thực tế.
+- Với ruleset cho `main`, yêu cầu pull request và các status check `Repository source`, `Frontend TypeScript` sau khi workflow đã chạy thành công. Cấu hình người review và quyền bypass phù hợp với số maintainer thực tế.
 - Bật secret scanning/push protection khi tài khoản và repository hỗ trợ.
 - Chỉ cấp quyền ghi cho người phát hành và maintainer cần thiết.
 
-Workflow [Source checks](../../.github/workflows/source-checks.yml) chỉ cài dependency frontend và kiểm tra TypeScript; không build, chạy test hay publish. Dependabot đề xuất cập nhật NuGet, npm và GitHub Actions hằng tuần. Source checks hiện chưa xác minh SDK biên dịch hoặc hành vi API.
+Workflow [Source checks](../../.github/workflows/source-checks.yml) kiểm tra UTF-8, JSON, liên kết nội bộ, tham chiếu project và TypeScript; không build, chạy test hay publish. Dependabot đề xuất cập nhật NuGet, npm và GitHub Actions hằng tuần. Source checks hiện chưa xác minh SDK biên dịch hoặc hành vi API.
 
 Tham khảo chính thức: [rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets), [private vulnerability reporting](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/configure-vulnerability-reporting/configure-for-a-repository).
 
@@ -65,16 +63,6 @@ Xem [hướng dẫn profile organization của GitHub](https://docs.github.com/e
 
 ## Phiên bản và phát hành
 
-Version nằm trong `SofiPOS.FnB.Sdk.csproj`. Dùng tag `fnb-dotnet-vMAJOR.MINOR.PATCH`, ví dụ `fnb-dotnet-v1.0.0`; thêm release notes mô tả thay đổi, tương thích và các kiểm tra đã thực hiện. Chỉ chuyển nội dung `Unreleased` thành version có ngày phát hành sau khi thực sự phát hành.
+Version nằm trong `SofiPOS.FnB.Sdk.csproj`; tag theo SDK có dạng `fnb-dotnet-vMAJOR.MINOR.PATCH`. Quy trình chọn version, đọc metadata, đóng gói, tạo GitHub Release và phát hành NuGet nằm trong [releases.md](releases.md).
 
-Gói `artifacts` có sẵn trên máy trước khi chuẩn bị public có thể chưa chứa metadata repository/MIT mới. Tạo lại từ commit/tag được chọn trước khi phân phối. Các lệnh đóng gói dưới đây chỉ chạy theo quyết định phát hành của maintainer:
-
-```powershell
-dotnet pack sdks/fnb/dotnet/SofiPOS.FnB.Sdk/SofiPOS.FnB.Sdk.csproj -c Release -o sdks/fnb/dotnet/artifacts
-```
-
-Trước khi phát hành, thực hiện kiểm tra SDK phù hợp với thay đổi và ghi rõ kết quả. Workflow hiện có không thay thế kiểm tra .NET. Khi phát hành `1.0.0`, xác nhận manifest của package chứa version `1.0.0`, license `MIT`, URL repository và README đúng; mở gói để kiểm tra nội dung.
-
-Tạo GitHub Release từ tag đã chọn, đính kèm `.nupkg` và `.snupkg` mới. Nếu phát hành NuGet.org, người phát hành cần quyền sở hữu package và thông tin xác thực NuGet riêng. Chỉ bổ sung workflow publish khi đã cấu hình quyền phát hành và phê duyệt cần thiết.
-
-Sau khi package thực sự có trên NuGet.org, xác nhận khả năng cài trong một ứng dụng riêng rồi cập nhật hướng dẫn cài đặt. Không gắn badge thành công, badge NuGet hoặc tuyên bố đã phát hành trước khi kiểm tra trạng thái thực tế.
+Nội dung chưa phát hành nằm trong `Unreleased` của [CHANGELOG.md](../../CHANGELOG.md). Các thay đổi không tương thích cần cập nhật [hướng dẫn chuyển đổi](../migration-guide.md).

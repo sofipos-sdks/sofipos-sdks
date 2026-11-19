@@ -14,6 +14,10 @@ public sealed class LookupsService : ServiceBase
     public Task<List<Branch>> GetBranchesAsync(CancellationToken cancellationToken = default)
         => Api.GetAsync<List<Branch>>("lookups/branches", null, cancellationToken);
 
+    /// <summary>Nhóm sản phẩm (loại PRO), dùng cho <see cref="ProductCreateRequest.CategoryId"/>. <c>GET /lookups/product-categories</c></summary>
+    public Task<List<ProductCategory>> GetProductCategoriesAsync(CancellationToken cancellationToken = default)
+        => Api.GetAsync<List<ProductCategory>>("lookups/product-categories", null, cancellationToken);
+
     /// <summary>Hạng thành viên, dùng cho <c>membershipRankIds</c>. <c>GET /lookups/membership-ranks</c></summary>
     public Task<List<MembershipRank>> GetMembershipRanksAsync(CancellationToken cancellationToken = default)
         => Api.GetAsync<List<MembershipRank>>("lookups/membership-ranks", null, cancellationToken);
@@ -42,9 +46,19 @@ public sealed class ProductsService : ServiceBase
     public Task<List<ProductUnit>> GetUnitsAsync(Guid productId, CancellationToken cancellationToken = default)
         => Api.GetAsync<List<ProductUnit>>($"products/{Id(productId)}/units", null, cancellationToken);
 
-    /// <summary>Tạo sản phẩm; mã đã tồn tại trả 422. <c>POST /products</c></summary>
+    /// <summary>
+    /// Tạo sản phẩm; <see cref="ProductCreateRequest.CategoryId"/> bắt buộc. Mã đã tồn tại hoặc nhóm không hợp lệ trả 422.
+    /// <c>POST /products</c>
+    /// </summary>
     public Task<Product> CreateAsync(ProductCreateRequest request, CancellationToken cancellationToken = default)
-        => Api.PostAsync<Product>("products", Required(request), cancellationToken);
+    {
+        if (Required(request).CategoryId == Guid.Empty)
+        {
+            throw new ArgumentException("Vui lòng chọn nhóm sản phẩm (CategoryId).", nameof(request));
+        }
+
+        return Api.PostAsync<Product>("products", request, cancellationToken);
+    }
 
     /// <summary>Cập nhật sản phẩm. <c>PUT /products/{productId}</c></summary>
     public Task<Product> UpdateAsync(Guid productId, ProductUpdateRequest request, CancellationToken cancellationToken = default)

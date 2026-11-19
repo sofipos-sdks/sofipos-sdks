@@ -26,6 +26,10 @@ public sealed class Product
     [JsonPropertyName("unit")]
     public string? Unit { get; set; }
 
+    /// <summary>Nhóm sản phẩm hiện tại.</summary>
+    [JsonPropertyName("categoryId")]
+    public Guid? CategoryId { get; set; }
+
     /// <summary>Thời điểm cập nhật gần nhất trên POS.</summary>
     [JsonPropertyName("updatedAt")]
     public DateTime UpdatedAt { get; set; }

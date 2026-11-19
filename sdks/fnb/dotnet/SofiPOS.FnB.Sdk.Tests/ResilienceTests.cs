@@ -52,7 +52,7 @@ public class ResilienceTests
         var handler = new MockHttpHandler().Respond(HttpStatusCode.ServiceUnavailable).RespondJson(RequestTests.OrderJson);
         var client = TestClient.Create(handler, o => o.MaxRetries = 5);
 
-        var ex = await Assert.ThrowsAsync<SofiPosApiException>(() => client.FnbOrders.CreateAsync(new FnbOrderCreateRequest
+        var ex = await Assert.ThrowsAsync<SofiPosApiException>(() => client.FnbOrders.CreateAsync(Guid.NewGuid(), new FnbOrderCreateRequest
         {
             RequestId = Guid.NewGuid(),
             Items = { new FnbOrderItemRequest { ProductId = Guid.NewGuid(), Quantity = 1 } }
@@ -71,8 +71,8 @@ public class ResilienceTests
             .RespondJson(RequestTests.OrderJson);
         var client = TestClient.Create(handler);
 
-        await Assert.ThrowsAsync<HttpRequestException>(() => client.FnbPayments.PayAsync(Guid.NewGuid(), new FnbPaymentRequest { PaymentMethod = PaymentMethod.Cash }));
-        await Assert.ThrowsAsync<SofiPosApiException>(() => client.FnbOrders.CancelAsync(Guid.NewGuid(), "Khách đổi ý"));
+        await Assert.ThrowsAsync<HttpRequestException>(() => client.FnbPayments.PayAsync(Guid.NewGuid(), Guid.NewGuid(), new FnbPaymentRequest { PaymentMethod = PaymentMethod.Cash }));
+        await Assert.ThrowsAsync<SofiPosApiException>(() => client.FnbOrders.CancelAsync(Guid.NewGuid(), Guid.NewGuid(), "Khách đổi ý"));
 
         Assert.Equal(2, handler.Requests.Count);
     }
@@ -112,7 +112,7 @@ public class ResilienceTests
         });
         var client = TestClient.Create(handler, o => { o.Timeout = TimeSpan.FromMilliseconds(100); o.MaxRetries = 0; });
 
-        var ex = await Assert.ThrowsAsync<TimeoutException>(() => client.FnbOrders.CreateAsync(new FnbOrderCreateRequest
+        var ex = await Assert.ThrowsAsync<TimeoutException>(() => client.FnbOrders.CreateAsync(Guid.NewGuid(), new FnbOrderCreateRequest
         {
             RequestId = Guid.NewGuid(),
             Items = { new FnbOrderItemRequest { ProductId = Guid.NewGuid(), Quantity = 1 } }

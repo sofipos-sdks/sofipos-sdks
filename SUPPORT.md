@@ -21,6 +21,6 @@ Issue public chỉ dùng cho thông tin có thể công khai.
 - HTTP status, mã lỗi nghiệp vụ và `traceId` nếu có.
 - Đoạn code hoặc payload mẫu đã bỏ thông tin xác thực và dữ liệu khách hàng.
 
-Không đăng Partner Key, webhook secret, mật khẩu MongoDB hoặc thông tin thanh toán. Dùng ID và dữ liệu giả trong ví dụ public.
+Không đăng Partner Key, webhook secret, mật khẩu dịch vụ hoặc thông tin thanh toán. Dùng ID và dữ liệu giả trong ví dụ public.
 
 GitHub Issues không thay thế kênh xử lý sự cố vận hành của cửa hàng. Repository chưa công bố SLA hỗ trợ qua Issues.

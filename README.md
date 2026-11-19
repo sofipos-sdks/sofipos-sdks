@@ -5,18 +5,38 @@
 **SDK và công cụ tích hợp dành cho đối tác SofiPOS.**
 
 [![.NET 8+](https://img.shields.io/badge/.NET-8%2B-512BD4)](sdks/fnb/dotnet/README.md)
+[![Source checks](https://github.com/sofipos-sdks/sofipos-sdks/actions/workflows/source-checks.yml/badge.svg?branch=main)](https://github.com/sofipos-sdks/sofipos-sdks/actions/workflows/source-checks.yml)
 [![Partner API v1](https://img.shields.io/badge/Partner_API-v1-16856B)](docs/integration-guide.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-[Bắt đầu nhanh](docs/getting-started.md) · [SDK .NET](sdks/fnb/dotnet/README.md) · [Ứng dụng demo](examples/fnb-dotnet-react/README.md) · [Hướng dẫn tích hợp](docs/integration-guide.md) · [Hỗ trợ](SUPPORT.md)
+[Bắt đầu nhanh](docs/getting-started.md) · [SDK .NET](sdks/fnb/dotnet/README.md) · [Ứng dụng demo](examples/fnb/README.md) · [Tài liệu](docs/README.md) · [Hỗ trợ](SUPPORT.md)
 
 Kết nối ứng dụng của bạn với danh mục, thực đơn, bàn, đơn hàng và thanh toán FnB qua Partner API. SDK cung cấp model có kiểu dữ liệu, phân trang, xử lý lỗi, retry GET và kiểm tra chữ ký webhook.
+
+## Chọn cách bắt đầu
+
+| Bạn cần | Bắt đầu tại |
+|---|---|
+| Tích hợp vào ứng dụng .NET | [Cài đặt và lời gọi đầu tiên](docs/getting-started.md) |
+| Thử API bằng giao diện | [FnB SDK Lab](examples/fnb/README.md) — .NET 10 + React, không cần database |
+| Xem cấu hình và các nhóm API | [Tài liệu SDK .NET](sdks/fnb/dotnet/README.md) |
+| Cập nhật code tích hợp cũ | [Hướng dẫn chuyển đổi](docs/migration-guide.md) |
+
+| SDK hiện có | Package / namespace | Yêu cầu | Phạm vi |
+|---|---|---|---|
+| [FnB .NET](sdks/fnb/dotnet/README.md) | `SofiPOS.FnB.Sdk` / `SofiPOS.FnB` | .NET 8 trở lên | [92 thao tác / 13 nhóm API](examples/fnb/COVERAGE.md) |
 
 ## Bắt đầu tích hợp
 
 1. Nhận API Base URL và Partner Key từ cửa hàng SofiPOS.
 2. Làm theo [hướng dẫn bắt đầu](docs/getting-started.md) để tham chiếu SDK từ source hoặc dùng gói đã phát hành.
 3. Đọc dữ liệu bằng SDK, sau đó triển khai luồng tạo đơn, thanh toán và webhook theo [hướng dẫn tích hợp](docs/integration-guide.md).
+
+```powershell
+git clone https://github.com/sofipos-sdks/sofipos-sdks.git
+```
+
+Tham chiếu `sdks/fnb/dotnet/SofiPOS.FnB.Sdk/SofiPOS.FnB.Sdk.csproj` từ ứng dụng của bạn. Đặt `SOFIPOS_BASE_URL` và `SOFIPOS_API_KEY`, rồi gọi SDK:
 
 ```csharp
 using SofiPOS.FnB;
@@ -37,9 +57,11 @@ foreach (var branch in branches)
 
 SDK hiện đặt version `1.0.0` trong source. Khả năng cài từ NuGet.org chỉ được xác nhận sau khi có bản phát hành; có thể bắt đầu ngay bằng `ProjectReference`.
 
+Các API `Fnb`, `FnbOrders`, `FnbPayments` yêu cầu `branchId` cho từng request. Tạo sản phẩm yêu cầu `CategoryId`. Xem [hướng dẫn chuyển đổi](docs/migration-guide.md) nếu bạn đã dùng chữ ký hàm trước đây.
+
 ## Cấu trúc workspace
 
-SDK theo từng mô hình bán hàng, tách theo ngôn ngữ; ứng dụng demo đặt riêng trong `examples`.
+SDK theo từng mô hình bán hàng, tách theo ngôn ngữ. Mỗi demo trong `examples/{model}` có một frontend dùng chung và các backend theo ngôn ngữ SDK.
 
 ```text
 sofipos-sdks/
@@ -51,27 +73,25 @@ sofipos-sdks/
 │           ├── SofiPOS.FnB.Sdk.Tests/
 │           ├── examples/SofiPOS.FnB.Example/
 │           └── README.md
-└── examples/
-    └── fnb-dotnet-react/
-        ├── backend/
-        ├── frontend/
-        ├── COVERAGE.md
-        └── README.md
+├── examples/
+│   └── fnb/
+│       ├── frontend/
+│       ├── backends/dotnet/
+│       ├── CONTRACT.md
+│       ├── COVERAGE.md
+│       └── README.md
+├── docs/                         # Tích hợp, chuyển đổi và phát hành
+├── scripts/check-source.mjs      # Kiểm tra source, không build/test
+└── .github/                      # CI, Dependabot và mẫu Issue/PR
 ```
-
-## SDK hiện có
-
-| Mô hình | Ngôn ngữ | Vị trí | Package |
-|---|---|---|---|
-| FnB | .NET 8+ | [sdks/fnb/dotnet](sdks/fnb/dotnet/README.md) | `SofiPOS.FnB.Sdk` |
 
 Quy ước khi bổ sung SDK: `sdks/{model}/{language}`. Ví dụ `sdks/retail/dotnet`, `sdks/fnb/nodejs`, `sdks/retail/nodejs`. Những SDK này chưa được triển khai; không có package giả hoặc thư mục chứa code mẫu thay thế chức năng thật.
 
 ## Ứng dụng demo
 
-[FnB SDK Lab — .NET 10 + React + MongoDB](examples/fnb-dotnet-react/README.md) cung cấp form cho đủ **91 thao tác Partner API**, nhận webhook, lưu bản sao dữ liệu và lịch sử SDK.
+[FnB SDK Lab](examples/fnb/README.md) có một frontend React dùng chung: nhập thông tin kết nối, gọi **92 thao tác Partner API** bằng form và chọn các bản ghi liên kết theo tên từ API. Có trace HTTP và webhook inbox trong RAM; không cần database hoặc đồng bộ dữ liệu trước.
 
-Backend dùng `ProjectReference` đến SDK trong workspace. Không cần xuất bản hoặc cài gói NuGet nội bộ để chạy demo.
+Backend hiện có tại `examples/fnb/backends/dotnet`, dùng `ProjectReference` đến SDK trong workspace. Backend mới, ví dụ Node.js, đặt tại `examples/fnb/backends/nodejs` khi được triển khai và tuân theo [hợp đồng HTTP](examples/fnb/CONTRACT.md). Đổi `BACKEND_URL` để frontend gọi backend khác; không cần nhân bản frontend.
 
 ## Tài liệu API
 
@@ -79,12 +99,24 @@ Backend dùng `ProjectReference` đến SDK trong workspace. Không cần xuất
 |---|---|
 | [Bắt đầu nhanh](docs/getting-started.md) | Yêu cầu môi trường, cài đặt, lời gọi đầu tiên |
 | [Hướng dẫn tích hợp](docs/integration-guide.md) | Xác thực, nhiều cửa hàng, đơn hàng, lỗi và webhook |
+| [Chuyển đổi API](docs/migration-guide.md) | `branchId`, nhóm sản phẩm và cấu trúc demo mới |
 | [SDK .NET](sdks/fnb/dotnet/README.md) | Cấu hình, nhóm API và ví dụ chi tiết |
-| [SDK Lab](examples/fnb-dotnet-react/README.md) | Chạy demo .NET + React + MongoDB |
-| [Độ phủ chức năng](examples/fnb-dotnet-react/COVERAGE.md) | Đối chiếu 91 thao tác SDK với form demo |
+| [SDK Lab](examples/fnb/README.md) | Chạy demo .NET + React, phiên trong RAM |
+| [Độ phủ chức năng](examples/fnb/COVERAGE.md) | Đối chiếu 92 thao tác SDK với form demo |
 | [Changelog](CHANGELOG.md) | Thay đổi và thông tin tương thích |
+| [Phát hành SDK](docs/maintainers/releases.md) | Version, tag, package và release notes |
 
 Đặc tả API triển khai và bộ Postman, nếu cần, được cung cấp qua đầu mối tích hợp SofiPOS của bạn. Các hướng dẫn trong repository này có thể đọc độc lập.
+
+## Phát triển từ source
+
+Kiểm tra UTF-8, JSON, liên kết tài liệu và tham chiếu project từ thư mục gốc:
+
+```powershell
+node scripts/check-source.mjs
+```
+
+Frontend dùng `npm run check` để kiểm tra TypeScript. [Hướng dẫn đóng góp](CONTRIBUTING.md) mô tả nhánh làm việc, commit và pull request; [hướng dẫn phát hành](docs/maintainers/releases.md) dành cho maintainer.
 
 ## Đóng góp và hỗ trợ
 

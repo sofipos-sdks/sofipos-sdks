@@ -19,6 +19,7 @@
     <Description>Official SofiPOS FnB SDK for .NET</Description>
     <PackageTags>sofipos;pos;fnb;restaurant;partner;api;sdk;webhook</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReleaseNotes>https://github.com/sofipos-sdks/sofipos-sdks/blob/main/CHANGELOG.md</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/sofipos-sdks/sofipos-sdks</PackageProjectUrl>
     <RepositoryUrl>https://github.com/sofipos-sdks/sofipos-sdks.git</RepositoryUrl>
@@ -28,6 +29,7 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <ItemGroup>

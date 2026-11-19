@@ -16,3 +16,4 @@ Liệt kê những kiểm tra thực tế đã chạy và kết quả. Nếu ch�
 - [ ] Không chứa thông tin xác thực hoặc dữ liệu cửa hàng thật.
 - [ ] Giữ nguyên tiếng Việt/Unicode và dùng UTF-8 không BOM.
 - [ ] Đã cập nhật tài liệu/changelog nếu ảnh hưởng người dùng.
+- [ ] Đã ghi rõ thay đổi không tương thích và hướng dẫn chuyển đổi nếu có.

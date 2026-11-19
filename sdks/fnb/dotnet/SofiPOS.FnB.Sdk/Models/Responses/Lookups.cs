@@ -62,3 +62,19 @@ public sealed class Branch
     [JsonPropertyName("isActive")]
     public bool IsActive { get; set; }
 }
+
+/// <summary>Nhóm sản phẩm (loại PRO) của cửa hàng, dùng chọn <c>CategoryId</c> khi tạo sản phẩm.</summary>
+public sealed class ProductCategory
+{
+    /// <summary>ID.</summary>
+    [JsonPropertyName("id")]
+    public Guid Id { get; set; }
+
+    /// <summary>Tên nhóm.</summary>
+    [JsonPropertyName("name")]
+    public string Name { get; set; } = string.Empty;
+
+    /// <summary>Nhóm cha; <c>null</c> là nhóm gốc.</summary>
+    [JsonPropertyName("parentId")]
+    public Guid? ParentId { get; set; }
+}
