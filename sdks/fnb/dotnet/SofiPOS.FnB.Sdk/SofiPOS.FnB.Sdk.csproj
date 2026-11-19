@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>SofiPOS.FnB.Sdk</AssemblyName>
+    <RootNamespace>SofiPOS.FnB</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <IsPackable>true</IsPackable>
+
+    <PackageId>SofiPOS.FnB.Sdk</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>SofiPOS</Authors>
+    <Company>SofiPOS</Company>
+    <Product>SofiPOS FnB SDK</Product>
+    <Description>Official SofiPOS FnB SDK for .NET</Description>
+    <PackageTags>sofipos;pos;fnb;restaurant;partner;api;sdk;webhook</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/sofipos-sdks/sofipos-sdks</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/sofipos-sdks/sofipos-sdks.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <Copyright>Copyright © SofiPOS</Copyright>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="SofiPOS.FnB.Sdk.Tests" />
+  </ItemGroup>
+
+</Project>

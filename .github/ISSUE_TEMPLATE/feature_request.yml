@@ -1,0 +1,23 @@
+name: Feature request
+description: Đề xuất cải thiện SDK và trải nghiệm tích hợp.
+title: "[Feature]: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Nhu cầu tích hợp
+      description: Nghiệp vụ hoặc trở ngại hiện tại, dùng dữ liệu có thể công khai.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Thay đổi đề xuất
+      description: Kết quả mong muốn và ví dụ cách dùng.
+    validations:
+      required: true
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Tương thích và phương án khác
+      description: Nếu có, mô tả ảnh hưởng đến ứng dụng đang tích hợp.

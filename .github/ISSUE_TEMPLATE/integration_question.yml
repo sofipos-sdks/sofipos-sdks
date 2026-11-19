@@ -1,0 +1,20 @@
+name: Integration question
+description: Hỏi cách dùng SDK với thông tin có thể công khai.
+title: "[Integration]: "
+body:
+  - type: markdown
+    attributes:
+      value: "Xem docs/getting-started.md và SUPPORT.md trước khi gửi. Yêu cầu cấp key hoặc hỗ trợ dữ liệu cửa hàng cần gửi riêng cho đầu mối SofiPOS."
+  - type: input
+    id: version
+    attributes:
+      label: Version SDK và môi trường
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: Câu hỏi
+      description: Mô tả mục tiêu, phương thức SDK liên quan và điều bạn đã thử. Không gửi key hoặc dữ liệu thật.
+    validations:
+      required: true

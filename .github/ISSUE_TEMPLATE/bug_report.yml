@@ -1,0 +1,45 @@
+name: Bug report
+description: Báo lỗi SDK hoặc ứng dụng demo có thể tái hiện.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: "Không gửi Partner Key, webhook secret, connection string có mật khẩu hoặc dữ liệu khách hàng. Báo cáo bảo mật theo SECURITY.md."
+  - type: dropdown
+    id: component
+    attributes:
+      label: Thành phần
+      options:
+        - FnB .NET SDK
+        - SDK Lab backend
+        - SDK Lab frontend
+        - Tài liệu hoặc ví dụ
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Version và môi trường
+      description: Version SDK hoặc commit, .NET, hệ điều hành; thêm Node.js nếu liên quan frontend.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Cách tái hiện
+      description: Các bước và code tối thiểu với dữ liệu giả.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Kết quả mong đợi
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Kết quả thực tế
+      description: HTTP status, mã lỗi, traceId và log đã bỏ dữ liệu nhạy cảm nếu có.
+    validations:
+      required: true
