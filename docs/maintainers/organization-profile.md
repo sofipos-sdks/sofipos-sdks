@@ -1,5 +1,3 @@
-![SofiPOS Developers](https://raw.githubusercontent.com/sofipos-sdks/sofipos-sdks/main/docs/assets/banner.svg)
-
 # SofiPOS Developers
 
 **SDK và công cụ tích hợp dành cho đối tác SofiPOS.**
